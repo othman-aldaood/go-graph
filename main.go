@@ -1,8 +1,8 @@
 package main
 
-import{
-	"imp/"
-}
+import (
+	"fmt"
+)
 
 func main() {
 	fmt.Println("Hello, World!")
