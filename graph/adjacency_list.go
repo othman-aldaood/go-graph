@@ -1,5 +1,7 @@
 package graph
 
+import "math"
+
 // Adjazenzlisten-Graph für gerichtete Kanten
 type AdjacencyListGraph struct {
 	nodes map[string]struct{}           // Set von Knoten
@@ -100,6 +102,33 @@ func (g *AdjacencyListGraph) DFS(start string) map[string]bool {
 }
 
 // Platzhalter für Dijkstra (noch nicht implementiert)
-func (g *AdjacencyListGraph) Dijkstra(id string) map[string]float64 {
-	panic("Dijkstra noch nicht implementiert")
+func (g *AdjacencyListGraph) Dijkstra(start string) map[string]float64 {
+	dist := make(map[string]float64)
+	visited := make(map[string]bool)
+	for node := range g.nodes {
+		dist[node] = math.Inf(1)
+	}
+	dist[start] = 0
+	for {
+		minDist := math.Inf(1)
+		var u string
+		found := false
+		for node := range g.nodes {
+			if !visited[node] && dist[node] < minDist {
+				minDist = dist[node]
+				u = node
+				found = true
+			}
+		}
+		if !found {
+			break
+		}
+		visited[u] = true
+		for v, weight := range g.edges[u] {
+			if dist[u]+weight < dist[v] {
+				dist[v] = dist[u] + weight
+			}
+		}
+	}
+	return dist
 }
