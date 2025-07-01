@@ -137,3 +137,54 @@ func TestDijkstraMitProblem9(t *testing.T) {
 	}
 	t.Log("Dijkstra-Test für problem9.8test.txt bestanden!")
 }
+
+func TestBFS(t *testing.T) {
+	g := NewAdjacencyListGraph()
+	g.AddDirectedEdge("A", "B", 1)
+	g.AddDirectedEdge("A", "C", 1)
+	g.AddDirectedEdge("B", "D", 1)
+	g.AddDirectedEdge("C", "D", 1)
+	g.AddDirectedEdge("D", "E", 1)
+
+	// Erwartete Distanzen von "A"
+	want := map[string]int{
+		"A": 0,
+		"B": 1,
+		"C": 1,
+		"D": 2,
+		"E": 3,
+	}
+
+	got := g.BFS("A")
+	for node, exp := range want {
+		val, ok := got[node]
+		if !ok {
+			t.Errorf("Knoten %s fehlt im Ergebnis!", node)
+		}
+		if val != exp {
+			t.Errorf("Knoten %s: erwartet %d, gefunden %d", node, exp, val)
+		}
+	}
+}
+
+// Test für Dijkstra mit der großen Datei problem9.8.txt und den 10 Zielknoten aus der Aufgabe
+func TestDijkstraChallengeProblem9(t *testing.T) {
+	// Erzeuge einen neuen leeren gerichteten Graphen (Adjazenzlisten-Graph)
+	g := NewAdjacencyListGraph()
+
+	// Initialisiere den Graphen aus der Datei problem9.8.txt
+	// (die Datei muss im gleichen Ordner wie dieses Test-Programm liegen)
+	initGraph9("problem9.8.txt", g)
+
+	// Berechne die kürzesten Wege von Knoten "1" zu allen anderen Knoten mit Dijkstra
+	dist := g.Dijkstra("1")
+
+	// Liste der gefragten 10 Zielknoten aus der Aufgabenstellung
+	nodes := []string{"7", "37", "59", "82", "99", "115", "133", "165", "188", "197"}
+
+	// Gib für jeden Zielknoten die berechnete Distanz im Test-Log aus
+	t.Logf("Dijkstra-Distanzen von 1 zu den 10 Zielknoten (problem9.8.txt):")
+	for _, node := range nodes {
+		t.Logf("%s: %.0f", node, dist[node])
+	}
+}
