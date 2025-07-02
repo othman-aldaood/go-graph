@@ -101,32 +101,25 @@ func (g *AdjacencyListGraph) DFS(start string) map[string]bool {
 	return visited
 }
 
-// Platzhalter für Dijkstra (noch nicht implementiert)
+// Dijkstra berechnet die kürzesten Distanzen von start zu allen Knoten.
+// Nutzt einen MinHeap für Effizienz (O((V+E) log V)).
 func (g *AdjacencyListGraph) Dijkstra(start string) map[string]float64 {
 	dist := make(map[string]float64)
-	visited := make(map[string]bool)
 	for node := range g.nodes {
 		dist[node] = math.Inf(1)
 	}
 	dist[start] = 0
-	for {
-		minDist := math.Inf(1)
-		var u string
-		found := false
-		for node := range g.nodes {
-			if !visited[node] && dist[node] < minDist {
-				minDist = dist[node]
-				u = node
-				found = true
-			}
-		}
-		if !found {
-			break
-		}
-		visited[u] = true
+
+	heap := NewMinHeap()
+	heap.Push(start, 0)
+
+	for heap.Len() > 0 {
+		u, du := heap.Pop()
+		// Alle Nachbarn von u durchgehen
 		for v, weight := range g.edges[u] {
-			if dist[u]+weight < dist[v] {
-				dist[v] = dist[u] + weight
+			if du+weight < dist[v] {
+				dist[v] = du + weight
+				heap.Push(v, dist[v]) // Insert/Update im Heap
 			}
 		}
 	}
